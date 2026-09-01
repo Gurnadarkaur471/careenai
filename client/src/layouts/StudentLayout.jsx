@@ -24,8 +24,8 @@ export default function StudentLayout() {
   const { user, logout } = useAuth();
 
   return (
-    <div className="min-h-screen flex bg-slate-50">
-      <aside className="w-64 bg-white border-r border-slate-100 flex flex-col shrink-0">
+    <div className="min-h-screen flex">
+      <aside className="glass-panel w-64 border-r flex flex-col shrink-0">
         <div className="px-6 py-5 border-b border-slate-100">
           <span className="text-xl font-bold text-brand-700">CareerAI</span>
         </div>
@@ -53,7 +53,7 @@ export default function StudentLayout() {
       </aside>
 
       <div className="flex-1 flex flex-col min-w-0">
-        <header className="h-16 bg-white border-b border-slate-100 flex items-center justify-between px-6 shrink-0">
+        <header className="glass-panel h-16 border-b flex items-center justify-between px-6 shrink-0">
           <div />
           <div className="flex items-center gap-4">
             <NotificationBell />

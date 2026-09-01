@@ -4,7 +4,7 @@ import { Link, Outlet } from "react-router-dom";
 export default function PublicLayout() {
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="border-b border-slate-100 bg-white">
+      <header className="glass-panel border-b">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link to="/" className="text-xl font-bold text-brand-700">CareerAI</Link>
           <nav className="flex items-center gap-3">
@@ -16,7 +16,7 @@ export default function PublicLayout() {
       <main className="flex-1">
         <Outlet />
       </main>
-      <footer className="border-t border-slate-100 py-6 text-center text-sm text-slate-400">
+      <footer className="glass-panel border-t py-6 text-center text-sm text-slate-400">
         © {new Date().getFullYear()} CareerAI — AI-Powered Employability Intelligence Platform
       </footer>
     </div>

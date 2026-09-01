@@ -54,6 +54,28 @@ export default function Signup() {
               <input className="input" {...register("branch")} />
             </div>
           </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="label">Target Role</label>
+              <select className="input" defaultValue="Software Developer" {...register("targetRole")}>
+                <option>Software Developer</option>
+                <option>Data Analyst</option>
+                <option>ML Engineer</option>
+                <option>Product Manager</option>
+                <option>UX Designer</option>
+              </select>
+            </div>
+            <div>
+              <label className="label">Target Goal</label>
+              <select className="input" defaultValue="Land my first job" {...register("targetGoal")}>
+                <option>Land my first job</option>
+                <option>Prepare for an internship</option>
+                <option>Switch careers</option>
+                <option>Get promoted</option>
+                <option>Build job-ready skills</option>
+              </select>
+            </div>
+          </div>
           <button className="btn-primary w-full" disabled={loading}>{loading ? "Creating account…" : "Sign Up"}</button>
         </form>
         <p className="text-center text-sm text-slate-500 mt-6">

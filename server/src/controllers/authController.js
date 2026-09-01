@@ -24,7 +24,7 @@ const signup = asyncHandler(async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) return fail(res, errors.array()[0].msg, 400);
 
-  const { name, email, password, college, course, branch, semester } = req.body;
+  const { name, email, password, college, course, branch, semester, targetRole, targetGoal } = req.body;
 
   const existing = await User.findOne({ email });
   if (existing) return fail(res, "An account with this email already exists.", 409);
@@ -43,7 +43,15 @@ const signup = asyncHandler(async (req, res) => {
     semester,
   });
 
-  await StudentProfile.create({ userId: user._id, college, course, branch, semester, targetRole: "Software Developer" });
+  await StudentProfile.create({
+    userId: user._id,
+    college,
+    course,
+    branch,
+    semester,
+    targetRole: targetRole || "Software Developer",
+    targetGoal: targetGoal || "Land my first job",
+  });
 
   const token = generateToken(user);
 

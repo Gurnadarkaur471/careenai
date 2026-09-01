@@ -22,13 +22,13 @@ export default function Dashboard() {
   if (loading) return <div className="text-slate-400">Loading dashboard…</div>;
   if (!data) return <div className="text-slate-400">Couldn't load your dashboard yet — complete your profile to get started.</div>;
 
-  const { employabilityScore, componentScores, biggestGap, strongestSkill, recommendedAction, targetRole } = data;
+  const { employabilityScore, componentScores, biggestGap, strongestSkill, recommendedAction, targetRole, targetGoal } = data;
 
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-slate-800">Welcome, {user?.name?.split(" ")[0]} 👋</h1>
-        <p className="text-slate-500 text-sm mt-1">Target role: <span className="font-medium">{targetRole}</span></p>
+        <p className="text-slate-500 text-sm mt-1">Working toward <span className="font-medium">{targetGoal}</span> as a <span className="font-medium">{targetRole}</span></p>
       </div>
 
       <div className="grid lg:grid-cols-3 gap-6">
@@ -47,10 +47,11 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div className="grid md:grid-cols-3 gap-6">
+      <div className="grid md:grid-cols-4 gap-6">
         <StatCard icon={Target} label="Biggest Gap" value={biggestGap ? biggestGap[0].toUpperCase() + biggestGap.slice(1) : "—"} sub="Focus here first" />
         <StatCard icon={Award} label="Strongest Skill" value={strongestSkill || "—"} sub="Keep leveraging this" />
         <StatCard icon={Briefcase} label="Target Role" value={targetRole} sub="Set in your profile" />
+        <StatCard icon={Target} label="Target Goal" value={targetGoal || "—"} sub="Personalized for you" />
       </div>
     </div>
   );

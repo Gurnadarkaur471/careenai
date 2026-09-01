@@ -30,7 +30,13 @@ async function callAI(prompt, { maxTokens = 1024, system = null } = {}) {
   if (!isConfigured()) throw new AIServiceUnavailable();
 
   const baseUrl = process.env.AI_API_URL || "https://api.anthropic.com/v1/messages";
-  const model = process.env.AI_MODEL || "claude-sonnet-4-6";
+
+  const defaultModel = process.env.AI_MODEL || null;
+  const fallbackModel = process.env.AI_FALLBACK_MODEL || null;
+
+  if (!defaultModel && !fallbackModel) {
+    throw new Error("No AI model configured. Set AI_MODEL or AI_FALLBACK_MODEL in your .env to a provider-supported model id.");
+  }
 
   // Determine endpoint: if user provided a base /v1 URL (text-gen webui default),
   // call the chat completions endpoint. If they provided a full messages endpoint
@@ -45,30 +51,68 @@ async function callAI(prompt, { maxTokens = 1024, system = null } = {}) {
     endpoint = baseUrl;
   }
 
-  const body = JSON.stringify({
-    model,
-    messages: [...(system ? [{ role: "system", content: system }] : []), { role: "user", content: prompt }],
-    max_tokens: maxTokens,
-  });
-
   const headers = { "Content-Type": "application/json" };
   if (process.env.AI_API_KEY) {
-    // Support both Bearer and x-api-key headers; text-generation-webui accepts either based
-    // on how it was started, and some Anthropic-compatible endpoints expect x-api-key.
     headers["Authorization"] = `Bearer ${process.env.AI_API_KEY}`;
     headers["x-api-key"] = process.env.AI_API_KEY;
   }
 
-  const res = await fetch(endpoint, { method: "POST", headers, body });
+  // Try the configured model, then optionally a fallback model if the provider
+  // reports the model is unavailable. This makes local and provider-based
+  // deployments more resilient when a model name is incorrect or inaccessible.
+  const modelsToTry = Array.from(new Set([defaultModel, fallbackModel].filter(Boolean)));
 
-  if (!res.ok) {
-    const text = await res.text().catch(() => "");
-    const err = new Error(`AI provider error (${res.status}): ${text.slice(0, 300)}`);
-    err.statusCode = 502;
-    throw err;
-  }
+  for (let idx = 0; idx < modelsToTry.length; idx++) {
+    const model = modelsToTry[idx];
 
-  const data = await res.json();
+    const body = JSON.stringify({
+      model,
+      messages: [...(system ? [{ role: "system", content: system }] : []), { role: "user", content: prompt }],
+      max_tokens: maxTokens,
+    });
+
+    const res = await fetch(endpoint, { method: "POST", headers, body });
+    const rawText = await res.text().catch(() => "");
+
+    if (!res.ok) {
+        // Try to parse a JSON error body the provider may return.
+        let parsedBody = null;
+        try {
+          parsedBody = JSON.parse(rawText || "null");
+        } catch {
+          parsedBody = null;
+        }
+
+        const lowered = (rawText || "").toLowerCase();
+        const modelNotFound =
+          (parsedBody && (parsedBody?.error?.code === "model_not_found" || parsedBody?.error?.message?.toLowerCase()?.includes("model not found"))) ||
+          lowered.includes("model_not_found") ||
+          lowered.includes("model not found") ||
+          lowered.includes("does not exist");
+
+        if (modelNotFound && idx < modelsToTry.length - 1) {
+          console.warn(`AI model \"${model}\" not available; retrying with fallback \"${modelsToTry[idx + 1]}\".`);
+          // try next model in the loop
+          continue;
+        }
+
+        const providerMessage = (parsedBody && (parsedBody.error?.message || parsedBody.message)) || rawText || `status:${res.status}`;
+        const err = new Error(`AI provider error (${res.status}): ${providerMessage.slice(0, 1000)}`);
+        // surface provider error details for upstream handling
+        err.statusCode = res.status;
+        if (parsedBody && parsedBody.error) err.providerError = parsedBody.error;
+        if (parsedBody && parsedBody.code) err.providerCode = parsedBody.code;
+        // map common provider error codes
+        if (err.providerError?.code) err.providerCode = err.providerError.code;
+        throw err;
+    }
+
+    let data = {};
+    try {
+      data = JSON.parse(rawText || "{}");
+    } catch {
+      data = {};
+    }
 
   // Normalize response from multiple provider styles (OpenAI/TextGen/Anthropic).
   const textResponse =
@@ -78,7 +122,12 @@ async function callAI(prompt, { maxTokens = 1024, system = null } = {}) {
     data?.output?.[0]?.content?.[0]?.text ||
     "";
 
-  return textResponse;
+    return textResponse;
+    }
+
+  // If we exhausted the candidate models without a successful response,
+  // surface a clear error to the caller.
+  throw new Error("AI provider did not return a successful response for any configured model.");
 }
 
 function parseJSONSafely(raw, fallback = null) {

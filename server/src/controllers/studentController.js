@@ -13,7 +13,7 @@ const updateProfile = asyncHandler(async (req, res) => {
   const allowed = [
     "college", "course", "branch", "semester", "academicPerformance",
     "skills", "softSkills", "certifications", "projects", "experience",
-    "targetRole", "careerInterests",
+    "targetRole", "targetGoal", "careerInterests",
   ];
   const updates = {};
   for (const key of allowed) if (key in req.body) updates[key] = req.body[key];
@@ -43,6 +43,7 @@ const getDashboard = asyncHandler(async (req, res) => {
   const profile = await StudentProfile.findOne({ userId: req.user._id });
   if (!profile) return fail(res, "Profile not found.", 404);
 
+  const targetGoal = profile.targetGoal || "Land my first job";
   const biggestGap = findBiggestGap(profile.componentScores.toObject ? profile.componentScores.toObject() : profile.componentScores);
   const strongestSkill = profile.skills?.[0] || null;
 
@@ -51,11 +52,12 @@ const getDashboard = asyncHandler(async (req, res) => {
     scoreBreakdown: profile.scoreBreakdown,
     componentScores: profile.componentScores,
     targetRole: profile.targetRole,
+    targetGoal,
     biggestGap,
     strongestSkill,
     recommendedAction: biggestGap
       ? `Improving your ${biggestGap} score will have the biggest impact on your employability right now.`
-      : "Complete your profile and take an assessment to get personalized recommendations.",
+      : `Complete your profile and take an assessment to get recommendations for your goal: ${targetGoal}.`,
   });
 });
 

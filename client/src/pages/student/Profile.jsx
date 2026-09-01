@@ -50,10 +50,22 @@ export default function Profile() {
           </div>
           <div>
             <label className="label">Target Role</label>
-            <select className="input" value={profile.targetRole || ""} onChange={(e) => setProfile({ ...profile, targetRole: e.target.value })}>
+            <select className="input" value={profile.targetRole || "Software Developer"} onChange={(e) => setProfile({ ...profile, targetRole: e.target.value })}>
               <option>Software Developer</option>
               <option>Data Analyst</option>
               <option>ML Engineer</option>
+              <option>Product Manager</option>
+              <option>UX Designer</option>
+            </select>
+          </div>
+          <div>
+            <label className="label">Target Goal</label>
+            <select className="input" value={profile.targetGoal || "Land my first job"} onChange={(e) => setProfile({ ...profile, targetGoal: e.target.value })}>
+              <option>Land my first job</option>
+              <option>Prepare for an internship</option>
+              <option>Switch careers</option>
+              <option>Get promoted</option>
+              <option>Build job-ready skills</option>
             </select>
           </div>
         </div>

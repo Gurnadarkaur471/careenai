@@ -13,6 +13,7 @@ export default function ResumeAnalyzer() {
   const [analyzing, setAnalyzing] = useState(false);
   const [stage, setStage] = useState(-1);
   const [result, setResult] = useState(null);
+  const [history, setHistory] = useState([]);
 
   const handleUploadAndAnalyze = async () => {
     if (!file) return push("Choose a PDF or DOCX resume first.", "error");
@@ -22,7 +23,10 @@ export default function ResumeAnalyzer() {
       const formData = new FormData();
       formData.append("resume", file);
       const uploadRes = await api.post("/resumes/upload", formData, { headers: { "Content-Type": "multipart/form-data" } });
-      const resumeId = uploadRes.data.data.resume._id;
+      const uploadedResume = uploadRes.data.data.resume;
+      const resumeId = uploadedResume._id;
+      // add uploaded resume to history immediately
+      setHistory((h) => [uploadedResume, ...h]);
       setUploading(false);
       setAnalyzing(true);
       setStage(1);
@@ -34,7 +38,10 @@ export default function ResumeAnalyzer() {
       const analyzeRes = await api.post(`/resumes/${resumeId}/analyze`);
       clearTimeout(t1); clearTimeout(t2);
       setStage(4);
-      setResult(analyzeRes.data.data.resume);
+      const analyzed = analyzeRes.data.data.resume;
+      setResult(analyzed);
+      // update history entry for this resume with the analyzed result
+      setHistory((h) => [analyzed, ...h.filter((r) => r._id !== analyzed._id)]);
       setTimeout(() => setStage(5), 400);
       push("Resume analyzed successfully.");
     } catch (err) {
@@ -46,23 +53,95 @@ export default function ResumeAnalyzer() {
     }
   };
 
+  // Fetch recent resume history
+  async function fetchHistory() {
+    try {
+      const res = await api.get('/resumes');
+      const resumes = res.data.data.resumes || [];
+      setHistory(resumes);
+    } catch (err) {
+      // ignore silently
+    }
+  }
+
+  React.useEffect(() => {
+    fetchHistory();
+    const id = setInterval(fetchHistory, 10000); // poll every 10s for real-time feel
+    return () => clearInterval(id);
+  }, []);
+
   return (
-    <div className="max-w-3xl space-y-6">
+    <div className="space-y-6">
       <h1 className="text-2xl font-bold text-slate-800">Resume Analyzer</h1>
 
-      <div className="card">
-        <label className="flex flex-col items-center justify-center border-2 border-dashed border-slate-200 rounded-xl py-10 cursor-pointer hover:border-brand-300 transition">
-          <UploadCloud className="text-brand-500 mb-2" size={32} />
-          <span className="text-sm text-slate-500">{file ? file.name : "Click to select a PDF or DOCX resume (max 5MB)"}</span>
-          <input type="file" accept=".pdf,.docx" className="hidden" onChange={(e) => setFile(e.target.files[0])} />
-        </label>
-        <button className="btn-primary mt-4" onClick={handleUploadAndAnalyze} disabled={uploading || analyzing}>
-          {uploading ? "Uploading…" : analyzing ? "Analyzing…" : "Upload & Analyze"}
-        </button>
+      <div className="grid grid-cols-12 gap-6">
+        <div className="col-span-8">
+          <div className="bg-white border border-slate-100 rounded-xl p-6">
+            <label className="block">
+              <div className="flex items-center justify-center border-2 border-dashed border-slate-200 rounded-xl py-16 cursor-pointer hover:border-brand-300 transition">
+                <div className="text-center">
+                  <UploadCloud className="text-brand-500 mb-2 mx-auto" size={36} />
+                  <div className="text-sm text-slate-500">{file ? file.name : "Drag and drop your resume here or click to browse (PDF, DOCX, max 5MB)"}</div>
+                  <div className="mt-2 text-xs text-slate-400">Supported formats: PDF, DOCX (Max 5MB)</div>
+                </div>
+              </div>
+              <input type="file" accept=".pdf,.docx" className="hidden" onChange={(e) => setFile(e.target.files[0])} />
+            </label>
+
+            <div className="mt-4 flex items-center justify-between">
+              <div />
+              <button className="btn-primary" onClick={handleUploadAndAnalyze} disabled={uploading || analyzing}>
+                {uploading ? "Uploading…" : analyzing ? "Analyzing…" : "Analyze with AI"}
+              </button>
+            </div>
+          </div>
+
+          {/* Feature cards */}
+          <div className="grid grid-cols-3 gap-4 mt-6">
+            <div className="bg-white border border-slate-100 rounded-xl p-4 text-sm">
+              <h4 className="font-semibold text-slate-700">ATS Optimization</h4>
+              <p className="text-slate-500 text-sm mt-2">Ensure your resume passes Applicant Tracking Systems with keyword analysis.</p>
+            </div>
+            <div className="bg-white border border-slate-100 rounded-xl p-4 text-sm">
+              <h4 className="font-semibold text-slate-700">Content Review</h4>
+              <p className="text-slate-500 text-sm mt-2">Checks for action verbs, quantifiable achievements, and formatting errors.</p>
+            </div>
+            <div className="bg-white border border-slate-100 rounded-xl p-4 text-sm">
+              <h4 className="font-semibold text-slate-700">ATS Preview</h4>
+              <p className="text-slate-500 text-sm mt-2">Preview how your resume appears to recruiters and systems.</p>
+            </div>
+          </div>
+        </div>
+
+        <aside className="col-span-4">
+          <div className="bg-white border border-slate-100 rounded-xl p-4">
+            <h3 className="font-semibold text-slate-800">Analysis History</h3>
+            <div className="mt-3 space-y-3">
+              {history.length === 0 && <div className="text-sm text-slate-400">No analyses yet.</div>}
+              {history.map((item) => (
+                <div key={item._id} className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-md bg-slate-50 text-slate-600 flex items-center justify-center text-xs font-semibold">{(item.fileType || 'PDF').replace('.', '').toUpperCase()}</div>
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between">
+                      <div className="text-sm font-medium text-slate-800">{item.fileName}</div>
+                      <div className={`text-sm ${item.resumeScore >= 75 ? 'text-slate-500' : item.resumeScore >= 50 ? 'text-amber-600' : 'text-rose-600'}`}>{item.resumeScore ?? '—'}/100</div>
+                    </div>
+                    <div className="text-xs text-slate-400">{new Date(item.createdAt).toLocaleDateString()}</div>
+                  </div>
+                </div>
+              ))}
+
+              <div className="mt-3">
+                <button onClick={fetchHistory} className="w-full border border-slate-100 rounded-md py-2 text-sm">Refresh</button>
+              </div>
+            </div>
+          </div>
+        </aside>
       </div>
 
+      {/* Existing staged progress & result area below for detailed output */}
       {stage >= 0 && stage < 5 && (
-        <div className="card">
+        <div className="bg-white border border-slate-100 rounded-xl p-4">
           <h3 className="font-semibold text-slate-800 mb-3">Resume Analysis</h3>
           <ul className="space-y-2 text-sm">
             {STAGES.map((s, i) => (
@@ -76,7 +155,7 @@ export default function ResumeAnalyzer() {
       )}
 
       {result && (
-        <div className="card space-y-4">
+        <div className="bg-white border border-slate-100 rounded-xl p-4">
           <div className="flex items-center gap-3">
             <FileText className="text-brand-600" />
             <div>
@@ -84,27 +163,13 @@ export default function ResumeAnalyzer() {
               <p className="text-xs text-slate-400">Analyzed {result.analysis?.aiGenerated ? "with AI enrichment" : "with deterministic engine"}</p>
             </div>
           </div>
-          <ProgressBar label="Resume Score" value={result.resumeScore} />
-          <div className="grid grid-cols-2 gap-3">
+          <div className="mt-3">
+            <ProgressBar label="Resume Score" value={result.resumeScore} />
+          </div>
+          <div className="grid grid-cols-2 gap-3 mt-3">
             <ProgressBar label="Section Completeness" value={result.analysis.sectionCompleteness} />
             <ProgressBar label="Skill Relevance" value={result.analysis.skillRelevance} />
           </div>
-          <div>
-            <h4 className="text-sm font-semibold text-slate-700 mb-2">Extracted Skills</h4>
-            <div className="flex flex-wrap gap-2">
-              {result.extractedSkills.map((s) => (
-                <span key={s} className="px-2.5 py-1 bg-brand-50 text-brand-700 rounded-full text-xs font-medium">{s}</span>
-              ))}
-            </div>
-          </div>
-          {result.analysis.suggestions?.length > 0 && (
-            <div>
-              <h4 className="text-sm font-semibold text-slate-700 mb-2">Suggestions</h4>
-              <ul className="list-disc list-inside text-sm text-slate-600 space-y-1">
-                {result.analysis.suggestions.map((s, i) => <li key={i}>{s}</li>)}
-              </ul>
-            </div>
-          )}
         </div>
       )}
     </div>

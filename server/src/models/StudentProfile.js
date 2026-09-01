@@ -14,6 +14,7 @@ const studentProfileSchema = new mongoose.Schema(
     projects: [{ title: String, description: String, techStack: [String] }],
     experience: [{ role: String, company: String, duration: String, description: String }],
     targetRole: { type: String, default: "Software Developer" },
+    targetGoal: { type: String, default: "Land my first job" },
     careerInterests: [{ type: String }],
 
     // Deterministic component scores (0-100), used by scoringEngine
