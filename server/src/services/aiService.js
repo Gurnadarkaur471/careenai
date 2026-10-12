@@ -26,13 +26,27 @@ function isConfigured() {
   return Boolean(process.env.AI_API_KEY || process.env.AI_API_URL);
 }
 
+function normalizeModelName(model) {
+  if (!model) return model;
+
+  const normalized = String(model).trim();
+  const aliasMap = {
+    "groq/compound": "qwen/qwen3.8-27b",
+    "groq/llama-3.3-70b-versatile": "qwen/qwen3.8-27b",
+    "groq/llama-3.1-8b-instant": "qwen/qwen3.8-27b",
+    "groq/mixtral-8x7b": "qwen/qwen3.8-27b",
+  };
+
+  return aliasMap[normalized.toLowerCase()] || normalized;
+}
+
 async function callAI(prompt, { maxTokens = 1024, system = null } = {}) {
   if (!isConfigured()) throw new AIServiceUnavailable();
 
   const baseUrl = process.env.AI_API_URL || "https://api.anthropic.com/v1/messages";
 
-  const defaultModel = process.env.AI_MODEL || null;
-  const fallbackModel = process.env.AI_FALLBACK_MODEL || null;
+  const defaultModel = normalizeModelName(process.env.AI_MODEL || null);
+  const fallbackModel = normalizeModelName(process.env.AI_FALLBACK_MODEL || null);
 
   if (!defaultModel && !fallbackModel) {
     throw new Error("No AI model configured. Set AI_MODEL or AI_FALLBACK_MODEL in your .env to a provider-supported model id.");
@@ -115,10 +129,12 @@ async function callAI(prompt, { maxTokens = 1024, system = null } = {}) {
     }
 
   // Normalize response from multiple provider styles (OpenAI/TextGen/Anthropic).
+  const message = data?.choices?.[0]?.message;
   const textResponse =
-    data?.choices?.[0]?.message?.content ||
+    (Array.isArray(message?.content) ? message.content.map((c) => c.text || c).join("\n") : message?.content) ||
+    message?.reasoning ||
     data?.choices?.[0]?.text ||
-    (Array.isArray(data?.content) && data.content.map((c) => c.text).join("\n")) ||
+    (Array.isArray(data?.content) && data.content.map((c) => c.text || c).join("\n")) ||
     data?.output?.[0]?.content?.[0]?.text ||
     "";
 

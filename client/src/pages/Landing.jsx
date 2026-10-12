@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
-import { FileText, Briefcase, Sparkles, Mic, ArrowDown, Check } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { FileText, Briefcase, Sparkles, Mic, ArrowDown, Check, Search, X, ArrowRight, TrendingUp } from "lucide-react";
+import { useAuth } from "../context/AuthContext.jsx";
 
 const ENGINES = [
   { icon: FileText, title: "Student Intelligence", desc: "Combines your resume, academics, skills, and assessments into one structured employability profile." },
@@ -214,6 +215,12 @@ const ImageShowcase = ({ feature, index }) => {
 };
 
 export default function Landing() {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const [announcementVisible, setAnnouncementVisible] = useState(true);
+  const [practiceMode, setPracticeMode] = useState("placement");
+  const [query, setQuery] = useState("");
+  const [company, setCompany] = useState("");
   const heroTitleRef = useRef(null);
   const heroDescRef = useRef(null);
   const heroBtnRef = useRef(null);
@@ -225,13 +232,38 @@ export default function Landing() {
   const heroBtnInView = useInView(heroBtnRef);
   const enginesInView = useInView(enginesRef);
 
+  const searchPractice = (event) => {
+    event.preventDefault();
+    const practice = {
+      practiceMode,
+      focusTopic: query.trim(),
+      company: company.trim(),
+    };
+    navigate(user ? "/interview-coach" : "/signup", { state: { practice } });
+  };
+
   return (
     <div className="relative">
       <ParallaxBg />
       <ScrollIndicator />
 
+      {announcementVisible && (
+        <div className="relative z-20 flex min-h-11 items-center justify-center gap-2 bg-slate-900 px-12 py-2 text-center text-sm font-medium text-emerald-300">
+          <span>Practice real company assessment patterns with AI-powered mock tests</span>
+          <ArrowRight size={17} aria-hidden="true" />
+          <button
+            type="button"
+            onClick={() => setAnnouncementVisible(false)}
+            aria-label="Dismiss announcement"
+            className="absolute right-4 top-1/2 -translate-y-1/2 rounded p-1 text-slate-300 hover:text-white"
+          >
+            <X size={18} />
+          </button>
+        </div>
+      )}
+
       {/* Hero Section */}
-      <section className="relative z-10 max-w-5xl mx-auto px-6 pt-20 pb-16 text-center min-h-screen flex flex-col justify-center">
+      <section className="relative z-10 mx-auto flex min-h-[calc(100vh-4rem)] max-w-5xl flex-col justify-center px-6 pb-16 pt-14 text-center">
         {/* Title with fade-in and slide-up animation */}
         <div
           ref={heroTitleRef}
@@ -243,7 +275,7 @@ export default function Landing() {
         >
           <h1 className="text-4xl md:text-6xl font-bold text-slate-900 leading-tight tracking-tight">
             Know Your Readiness. Find Your Fit.{" "}
-            <span className="bg-gradient-to-r from-brand-600 via-brand-500 to-teal-500 bg-clip-text text-transparent animate-gradient">
+            <span className="bg-gradient-to-r from-brand-600 via-brand-500 to-emerald-500 bg-clip-text text-transparent animate-gradient">
               Build Your Career.
             </span>
           </h1>
@@ -262,6 +294,66 @@ export default function Landing() {
             An AI-powered employability intelligence platform that evaluates your skills, matches you with jobs,
             identifies your gaps, simulates your career growth, and prepares you for interviews.
           </p>
+        </div>
+
+        <div className="mx-auto mt-9 w-full max-w-3xl animate-search-enter text-left">
+          <div className="mb-4 flex justify-center" role="group" aria-label="Practice mode">
+            <button
+              type="button"
+              aria-pressed={practiceMode === "placement"}
+              onClick={() => setPracticeMode("placement")}
+              className={`rounded-l-lg border px-5 py-2.5 text-sm font-semibold ${practiceMode === "placement" ? "border-brand-600 bg-brand-600 text-white shadow-md" : "border-slate-200 bg-white/80 text-slate-600 hover:bg-white"}`}
+            >
+              Placement prep
+            </button>
+            <button
+              type="button"
+              aria-pressed={practiceMode === "interview"}
+              onClick={() => setPracticeMode("interview")}
+              className={`rounded-r-lg border-y border-r px-5 py-2.5 text-sm font-semibold ${practiceMode === "interview" ? "border-brand-600 bg-brand-600 text-white shadow-md" : "border-slate-200 bg-white/80 text-slate-600 hover:bg-white"}`}
+            >
+              Mock interview
+            </button>
+          </div>
+          <form onSubmit={searchPractice} className="grid gap-3 rounded-2xl border border-white/80 bg-white/75 p-3 shadow-xl shadow-slate-900/10 backdrop-blur-xl sm:grid-cols-[minmax(0,1fr)_minmax(0,0.65fr)_auto]">
+            <label className="flex min-w-0 items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 focus-within:border-brand-400 focus-within:ring-2 focus-within:ring-brand-100">
+              <Search size={20} className="shrink-0 text-slate-400" aria-hidden="true" />
+              <input
+                aria-label="Topic or role"
+                className="min-w-0 flex-1 border-0 bg-transparent py-3 text-sm text-slate-800 outline-none placeholder:text-slate-400 focus:ring-0"
+                placeholder="Search a topic or role..."
+                autoComplete="off"
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+              />
+            </label>
+            <label className="flex min-w-0 items-center rounded-xl border border-slate-200 bg-white px-4 focus-within:border-brand-400 focus-within:ring-2 focus-within:ring-brand-100">
+              <input
+                aria-label="Company"
+                className="min-w-0 flex-1 border-0 bg-transparent py-3 text-sm text-slate-800 outline-none placeholder:text-slate-400 focus:ring-0"
+                placeholder="Company (optional)"
+                autoComplete="organization"
+                value={company}
+                onChange={(event) => setCompany(event.target.value)}
+              />
+            </label>
+            <button type="submit" className="btn-primary inline-flex items-center justify-center gap-2 px-6 py-3">
+              Search <ArrowRight size={17} />
+            </button>
+          </form>
+          <div className="mt-5 flex flex-wrap items-center justify-center gap-2 text-sm">
+            <span className="mr-1 inline-flex items-center gap-1.5 font-medium text-slate-500"><TrendingUp size={16} /> Trending</span>
+            {["Logical reasoning", "TCS", "Python", "Wipro", "Data structures"].map((suggestion) => (
+              <button
+                type="button"
+                key={suggestion}
+                onClick={() => /^(tcs|wipro)$/i.test(suggestion) ? setCompany(suggestion) : setQuery(suggestion)}
+                className="rounded-full border border-slate-200 bg-white/70 px-3.5 py-2 text-slate-600 transition hover:-translate-y-0.5 hover:border-brand-300 hover:bg-white hover:text-brand-700"
+              >
+                {suggestion}
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* CTA Button with fade-in and scale animation */}

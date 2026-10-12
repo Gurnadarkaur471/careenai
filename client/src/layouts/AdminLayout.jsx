@@ -11,20 +11,22 @@ const NAV = [
 export default function AdminLayout() {
   const { user, logout } = useAuth();
   return (
-    <div className="min-h-screen flex">
-      <aside className="glass-panel w-64 border-r flex flex-col shrink-0">
-        <div className="px-6 py-5 border-b border-slate-100">
-          <span className="text-xl font-bold text-brand-700">CareerAI</span>
-          <p className="text-xs text-slate-400 mt-0.5">Admin Console</p>
+    <div className="page-shell flex min-h-screen">
+      <aside className="glass-panel sticky top-0 flex h-screen w-72 shrink-0 flex-col border-r border-white/40 bg-white/20">
+        <div className="border-b border-white/40 px-6 py-5">
+          <span className="text-xl font-bold tracking-tight text-brand-700">CareerAI</span>
+          <p className="mt-1 text-xs text-slate-500">Admin Console</p>
         </div>
-        <nav className="flex-1 px-3 py-4 space-y-1">
+        <nav className="flex-1 space-y-1 px-3 py-4">
           {NAV.map(({ to, label, icon: Icon }) => (
             <NavLink
               key={to}
               to={to}
               className={({ isActive }) =>
-                `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition ${
-                  isActive ? "bg-brand-50 text-brand-700" : "text-slate-600 hover:bg-slate-50"
+                `flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition ${
+                  isActive
+                    ? "bg-gradient-to-r from-brand-50 to-cyan-50 text-brand-700 shadow-sm ring-1 ring-brand-100"
+                    : "text-slate-600 hover:bg-white/40 hover:text-slate-900"
                 }`
               }
             >
@@ -33,19 +35,23 @@ export default function AdminLayout() {
             </NavLink>
           ))}
         </nav>
-        <div className="p-3 border-t border-slate-100">
-          <button onClick={logout} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-500 hover:bg-slate-50 w-full">
+        <div className="border-t border-white/40 p-3">
+          <button
+            onClick={logout}
+            className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-white/40 hover:text-slate-900"
+          >
             <LogOut size={18} /> Logout
           </button>
         </div>
       </aside>
-      <div className="flex-1 flex flex-col min-w-0">
-        <header className="glass-panel h-16 border-b flex items-center justify-end px-6 shrink-0">
-          <div className="w-9 h-9 rounded-full bg-brand-600 text-white flex items-center justify-center text-sm font-semibold">
+
+      <div className="flex min-w-0 flex-1 flex-col">
+        <header className="glass-panel sticky top-0 z-30 flex h-20 items-center justify-end border-b border-white/40 bg-white/20 px-6 backdrop-blur-xl">
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-brand-600 to-cyan-500 text-sm font-semibold text-white shadow-lg shadow-brand-500/20">
             {user?.name?.[0]?.toUpperCase() || "A"}
           </div>
         </header>
-        <main className="flex-1 p-6 overflow-y-auto">
+        <main className="flex-1 overflow-y-auto p-6">
           <Outlet />
         </main>
       </div>

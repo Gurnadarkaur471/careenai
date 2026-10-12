@@ -4,6 +4,9 @@ const interviewSchema = new mongoose.Schema(
   {
     studentId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     targetRole: { type: String, required: true },
+    company: { type: String, default: "" },
+    focusTopic: { type: String, default: "" },
+    practiceMode: { type: String, enum: ["placement", "interview"], default: "interview" },
     jobId: { type: mongoose.Schema.Types.ObjectId, ref: "Job", default: null },
     interviewType: { type: String, enum: ["full", "technical", "hr", "behavioral"], default: "full" },
     questions: [

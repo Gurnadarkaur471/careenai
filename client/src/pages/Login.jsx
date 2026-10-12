@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useAuth } from "../context/AuthContext.jsx";
 import { useToast } from "../components/Toast.jsx";
@@ -9,6 +9,7 @@ export default function Login() {
   const { login } = useAuth();
   const { push } = useToast();
   const navigate = useNavigate();
+  const location = useLocation();
   const [loading, setLoading] = useState(false);
 
   const onSubmit = async (data) => {
@@ -16,7 +17,9 @@ export default function Login() {
     try {
       const user = await login(data.email, data.password);
       push("Welcome back!");
-      navigate(user.role === "ADMIN" ? "/admin/dashboard" : "/dashboard");
+      if (user.role === "ADMIN") navigate("/admin/dashboard");
+      else if (location.state?.practice) navigate("/interview-coach", { state: { practice: location.state.practice } });
+      else navigate("/dashboard");
     } catch (err) {
       push(err.response?.data?.message || "Login failed. Please try again.", "error");
     } finally {
@@ -42,7 +45,7 @@ export default function Login() {
           <button className="btn-primary w-full" disabled={loading}>{loading ? "Logging in…" : "Login"}</button>
         </form>
         <p className="text-center text-sm text-slate-500 mt-6">
-          Don't have an account? <Link to="/signup" className="text-brand-600 font-medium">Sign Up</Link>
+          Don't have an account? <Link to="/signup" state={location.state} className="text-brand-600 font-medium">Sign Up</Link>
         </p>
       </div>
     </div>

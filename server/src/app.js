@@ -22,8 +22,27 @@ const notificationRoutes = require("./routes/notificationRoutes");
 
 const app = express();
 
+const allowedOrigins = [
+  process.env.CLIENT_URL,
+  ...(process.env.CLIENT_URLS ? process.env.CLIENT_URLS.split(",") : []),
+  "http://localhost:5173",
+  "http://localhost:5174",
+  "http://localhost:4173",
+].filter(Boolean);
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+        return;
+      }
+      callback(new Error("Not allowed by CORS"));
+    },
+    credentials: true,
+  })
+);
 app.use(helmet());
-app.use(cors({ origin: process.env.CLIENT_URL || "http://localhost:5173", credentials: true }));
 app.use(express.json({ limit: "2mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(mongoSanitize());

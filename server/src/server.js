@@ -1,11 +1,13 @@
 require("dotenv").config();
 const app = require("./app");
 const connectDB = require("./config/db");
+const { seedDefaultAssessments } = require("./seed/seedQuestions");
 
 const PORT = process.env.PORT || 5000;
 
 async function startServer() {
   await connectDB();
+  await seedDefaultAssessments();
 
   const server = app.listen(PORT, () => {
     console.log(`[server] CareerAI API listening on http://localhost:${PORT}`);

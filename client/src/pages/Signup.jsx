@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useAuth } from "../context/AuthContext.jsx";
 import { useToast } from "../components/Toast.jsx";
@@ -9,6 +9,7 @@ export default function Signup() {
   const { signup } = useAuth();
   const { push } = useToast();
   const navigate = useNavigate();
+  const location = useLocation();
   const [loading, setLoading] = useState(false);
 
   const onSubmit = async (data) => {
@@ -16,7 +17,8 @@ export default function Signup() {
     try {
       await signup(data);
       push("Account created! Welcome to CareerAI.");
-      navigate("/dashboard");
+      if (location.state?.practice) navigate("/interview-coach", { state: { practice: location.state.practice } });
+      else navigate("/dashboard");
     } catch (err) {
       push(err.response?.data?.message || "Signup failed. Please try again.", "error");
     } finally {
@@ -79,7 +81,7 @@ export default function Signup() {
           <button className="btn-primary w-full" disabled={loading}>{loading ? "Creating account…" : "Sign Up"}</button>
         </form>
         <p className="text-center text-sm text-slate-500 mt-6">
-          Already have an account? <Link to="/login" className="text-brand-600 font-medium">Login</Link>
+          Already have an account? <Link to="/login" state={location.state} className="text-brand-600 font-medium">Login</Link>
         </p>
       </div>
     </div>
