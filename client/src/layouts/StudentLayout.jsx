@@ -7,6 +7,8 @@ import {
 import { useAuth } from "../context/AuthContext.jsx";
 import NotificationBell from "../components/NotificationBell.jsx";
 
+import ThemeToggle from "../components/ThemeToggle.jsx";
+
 const NAV = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/resume-analyzer", label: "Resume Analyzer", icon: FileText },
@@ -24,11 +26,18 @@ export default function StudentLayout() {
   const { user, logout } = useAuth();
 
   return (
-    <div className="page-shell flex min-h-screen">
-      <aside className="glass-panel sticky top-0 flex h-screen w-72 shrink-0 flex-col border-r border-white/40 bg-white/20">
-        <div className="border-b border-white/40 px-6 py-5">
-          <span className="text-xl font-bold tracking-tight text-brand-700">CareerAI</span>
-          <p className="mt-1 text-xs text-slate-500">Student workspace</p>
+    <div className="page-shell flex min-h-screen text-slate-800 dark:text-slate-100 transition-colors duration-300">
+      <aside className="glass-panel sticky top-0 flex h-screen w-72 shrink-0 flex-col border-r border-white/60 dark:border-white/10 bg-white/40 dark:bg-slate-950/60 backdrop-blur-2xl">
+        <div className="border-b border-white/60 dark:border-white/10 px-6 py-5">
+          <div className="flex items-center gap-2.5">
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-brand-600 to-teal-400 text-xs font-bold text-white shadow-md shadow-brand-500/25">
+              CA
+            </span>
+            <span className="text-xl font-extrabold tracking-tight bg-gradient-to-r from-brand-600 to-teal-500 bg-clip-text text-transparent">
+              CareerAI
+            </span>
+          </div>
+          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400 font-medium">Student workspace</p>
         </div>
 
         <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-4">
@@ -37,10 +46,10 @@ export default function StudentLayout() {
               key={to}
               to={to}
               className={({ isActive }) =>
-                `flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition ${
+                `flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200 ${
                   isActive
-                    ? "bg-gradient-to-r from-brand-50 to-cyan-50 text-brand-700 shadow-sm ring-1 ring-brand-100"
-                    : "text-slate-600 hover:bg-white/40 hover:text-slate-900"
+                    ? "bg-gradient-to-r from-brand-50 to-cyan-50 dark:from-brand-950/70 dark:to-cyan-950/50 text-brand-700 dark:text-brand-300 shadow-sm ring-1 ring-brand-200/60 dark:ring-brand-700/50 font-semibold"
+                    : "text-slate-600 dark:text-slate-400 hover:bg-white/50 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-white"
                 }`
               }
             >
@@ -50,10 +59,10 @@ export default function StudentLayout() {
           ))}
         </nav>
 
-        <div className="border-t border-white/40 p-3">
+        <div className="border-t border-white/60 dark:border-white/10 p-3">
           <button
             onClick={logout}
-            className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-white/40 hover:text-slate-900"
+            className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-400 transition hover:bg-white/50 dark:hover:bg-slate-800/50 hover:text-rose-600 dark:hover:text-rose-400"
           >
             <LogOut size={18} /> Logout
           </button>
@@ -61,11 +70,12 @@ export default function StudentLayout() {
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="glass-panel sticky top-0 z-30 flex h-20 items-center justify-between border-b border-white/40 bg-white/20 px-6 backdrop-blur-xl">
+        <header className="glass-panel sticky top-0 z-30 flex h-20 items-center justify-between border-b border-white/60 dark:border-white/10 bg-white/40 dark:bg-slate-950/60 px-6 backdrop-blur-2xl">
           <div />
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 md:gap-4">
+            <ThemeToggle />
             <NotificationBell />
-            <NavLink to="/settings" className="rounded-xl p-2.5 text-slate-600 transition hover:bg-white/40 hover:text-slate-900">
+            <NavLink to="/settings" className="rounded-xl p-2 text-slate-600 dark:text-slate-400 transition hover:bg-white/50 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-white">
               <Settings size={20} />
             </NavLink>
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-brand-600 to-cyan-500 text-sm font-semibold text-white shadow-lg shadow-brand-500/20">

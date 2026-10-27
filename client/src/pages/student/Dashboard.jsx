@@ -26,9 +26,28 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-slate-800">Welcome, {user?.name?.split(" ")[0]} 👋</h1>
-        <p className="text-slate-500 text-sm mt-1">Working toward <span className="font-medium">{targetGoal}</span> as a <span className="font-medium">{targetRole}</span></p>
+      <div className="relative rounded-2xl overflow-hidden border border-slate-200/80 shadow-sm bg-slate-950 group">
+        <div className="relative aspect-[21/7] md:aspect-[4/1] overflow-hidden">
+          <img
+            src="/images/career-coaching.jpg"
+            alt="AI Career Coaching Hub"
+            className="w-full h-full object-cover opacity-80 transition-transform duration-700 group-hover:scale-105"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-950/95 via-slate-950/60 to-transparent flex items-center p-6 md:p-8">
+            <div className="text-white max-w-xl">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-brand-500/30 text-brand-300 border border-brand-400/30 mb-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-brand-400 animate-pulse"></span>
+                AI Employability Intelligence
+              </span>
+              <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
+                Welcome back, {user?.name?.split(" ")[0]} 👋
+              </h1>
+              <p className="text-xs md:text-sm text-slate-300 mt-1">
+                Targeting <span className="font-semibold text-white">{targetRole || "Software Developer"}</span> · Goal: <span className="font-semibold text-emerald-400">{targetGoal || "Placement"}</span>
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div className="grid lg:grid-cols-3 gap-6">
@@ -38,7 +57,12 @@ export default function Dashboard() {
         </div>
 
         <div className="card lg:col-span-2 space-y-4">
-          <h3 className="font-semibold text-slate-800">Score Breakdown</h3>
+          <div className="flex items-center justify-between">
+            <h3 className="font-bold text-slate-900 dark:text-white">Score Breakdown</h3>
+            <span className="text-xs font-semibold text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-950/60 px-2.5 py-1 rounded-full border border-brand-200/60 dark:border-brand-800/60">
+              5 Core Dimensions
+            </span>
+          </div>
           <ProgressBar label="Technical Skills" value={componentScores.technical} />
           <ProgressBar label="Aptitude" value={componentScores.aptitude} />
           <ProgressBar label="Resume" value={componentScores.resume} />
@@ -48,10 +72,10 @@ export default function Dashboard() {
       </div>
 
       <div className="grid md:grid-cols-4 gap-6">
-        <StatCard icon={Target} label="Biggest Gap" value={biggestGap ? biggestGap[0].toUpperCase() + biggestGap.slice(1) : "—"} sub="Focus here first" />
-        <StatCard icon={Award} label="Strongest Skill" value={strongestSkill || "—"} sub="Keep leveraging this" />
-        <StatCard icon={Briefcase} label="Target Role" value={targetRole} sub="Set in your profile" />
-        <StatCard icon={Target} label="Target Goal" value={targetGoal || "—"} sub="Personalized for you" />
+        <StatCard icon={Target} label="Biggest Gap" value={biggestGap ? biggestGap[0].toUpperCase() + biggestGap.slice(1) : "—"} sub="Focus here first" color="purple" />
+        <StatCard icon={Award} label="Strongest Skill" value={strongestSkill || "—"} sub="Keep leveraging this" color="emerald" />
+        <StatCard icon={Briefcase} label="Target Role" value={targetRole} sub="Set in your profile" color="brand" />
+        <StatCard icon={Target} label="Target Goal" value={targetGoal || "—"} sub="Personalized for you" color="amber" />
       </div>
     </div>
   );

@@ -71,25 +71,32 @@ export default function ResumeAnalyzer() {
   }, []);
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-slate-800">Resume Analyzer</h1>
+    <div className="max-w-7xl space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-wider text-brand-600 dark:text-brand-400">Document Intelligence</p>
+          <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white mt-1">Resume Analyzer</h1>
+        </div>
+      </div>
 
       <div className="grid grid-cols-12 gap-6">
         <div className="col-span-8">
-          <div className="bg-white border border-slate-100 rounded-xl p-6">
+          <div className="card p-6">
             <label className="block">
-              <div className="flex items-center justify-center border-2 border-dashed border-slate-200 rounded-xl py-16 cursor-pointer hover:border-brand-300 transition">
+              <div className="flex items-center justify-center border-2 border-dashed border-slate-200/80 dark:border-white/10 rounded-2xl py-16 cursor-pointer hover:border-brand-400 hover:bg-brand-50/20 dark:hover:bg-brand-950/20 transition-all duration-300 group">
                 <div className="text-center">
-                  <UploadCloud className="text-brand-500 mb-2 mx-auto" size={36} />
-                  <div className="text-sm text-slate-500">{file ? file.name : "Drag and drop your resume here or click to browse (PDF, DOCX, max 5MB)"}</div>
-                  <div className="mt-2 text-xs text-slate-400">Supported formats: PDF, DOCX (Max 5MB)</div>
+                  <div className="w-14 h-14 mx-auto mb-3 rounded-2xl bg-gradient-to-br from-brand-500 to-teal-400 flex items-center justify-center shadow-lg shadow-brand-500/20 group-hover:scale-110 transition-transform">
+                    <UploadCloud className="text-white" size={26} />
+                  </div>
+                  <div className="text-sm font-semibold text-slate-800 dark:text-slate-100">{file ? file.name : "Drag and drop your resume here or click to browse"}</div>
+                  <div className="mt-1.5 text-xs text-slate-500 dark:text-slate-400">Supported formats: PDF, DOCX (Max 5MB)</div>
                 </div>
               </div>
               <input type="file" accept=".pdf,.docx" className="hidden" onChange={(e) => setFile(e.target.files[0])} />
             </label>
 
-            <div className="mt-4 flex items-center justify-between">
-              <div />
+            <div className="mt-5 flex items-center justify-between">
+              <span className="text-xs text-slate-500 dark:text-slate-400">Powered by CareerAI ATS Diagnostics</span>
               <button className="btn-primary" onClick={handleUploadAndAnalyze} disabled={uploading || analyzing}>
                 {uploading ? "Uploading…" : analyzing ? "Analyzing…" : "Analyze with AI"}
               </button>
@@ -98,24 +105,46 @@ export default function ResumeAnalyzer() {
 
           {/* Feature cards */}
           <div className="grid grid-cols-3 gap-4 mt-6">
-            <div className="bg-white border border-slate-100 rounded-xl p-4 text-sm">
-              <h4 className="font-semibold text-slate-700">ATS Optimization</h4>
-              <p className="text-slate-500 text-sm mt-2">Ensure your resume passes Applicant Tracking Systems with keyword analysis.</p>
+            <div className="card p-4 text-sm hover:scale-[1.02] transition-transform">
+              <span className="inline-block w-2.5 h-2.5 rounded-full bg-brand-500 mb-2"></span>
+              <h4 className="font-bold text-slate-900 dark:text-white">ATS Optimization</h4>
+              <p className="text-slate-600 dark:text-slate-300 text-xs mt-1.5 leading-relaxed">Ensure your resume passes Applicant Tracking Systems with keyword density matching.</p>
             </div>
-            <div className="bg-white border border-slate-100 rounded-xl p-4 text-sm">
-              <h4 className="font-semibold text-slate-700">Content Review</h4>
-              <p className="text-slate-500 text-sm mt-2">Checks for action verbs, quantifiable achievements, and formatting errors.</p>
+            <div className="card p-4 text-sm hover:scale-[1.02] transition-transform">
+              <span className="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500 mb-2"></span>
+              <h4 className="font-bold text-slate-900 dark:text-white">Content Review</h4>
+              <p className="text-slate-600 dark:text-slate-300 text-xs mt-1.5 leading-relaxed">Evaluates impact action verbs, metrics achievements, and structure completeness.</p>
             </div>
-            <div className="bg-white border border-slate-100 rounded-xl p-4 text-sm">
-              <h4 className="font-semibold text-slate-700">ATS Preview</h4>
-              <p className="text-slate-500 text-sm mt-2">Preview how your resume appears to recruiters and systems.</p>
+            <div className="card p-4 text-sm hover:scale-[1.02] transition-transform">
+              <span className="inline-block w-2.5 h-2.5 rounded-full bg-purple-500 mb-2"></span>
+              <h4 className="font-bold text-slate-900 dark:text-white">Recruiter Preview</h4>
+              <p className="text-slate-600 dark:text-slate-300 text-xs mt-1.5 leading-relaxed">Real-time simulation of how hiring teams and scanning algorithms see your profile.</p>
             </div>
           </div>
         </div>
 
-        <aside className="col-span-4">
-          <div className="bg-white border border-slate-100 rounded-xl p-4">
-            <h3 className="font-semibold text-slate-800">Analysis History</h3>
+        <aside className="col-span-4 space-y-6">
+          <div className="card p-0 overflow-hidden shadow-sm group">
+            <div className="relative aspect-video overflow-hidden bg-slate-950">
+              <img
+                src="/images/resume-scanner.jpg"
+                alt="AI Resume Scanning Engine"
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent flex items-end p-3.5">
+                <div>
+                  <div className="flex items-center gap-1.5 text-xs font-semibold text-emerald-400">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span>AI Neural ATS Scanner</span>
+                  </div>
+                  <p className="text-[11px] text-slate-300 mt-0.5">Automated skill parsing & benchmark matching</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="card p-4">
+            <h3 className="font-bold text-slate-900 dark:text-white">Analysis History</h3>
             <div className="mt-3 space-y-3">
               {history.length === 0 && <div className="text-sm text-slate-400">No analyses yet.</div>}
               {history.map((item) => (

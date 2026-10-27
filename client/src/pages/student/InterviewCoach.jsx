@@ -46,6 +46,27 @@ export function InterviewList() {
 
   return (
     <div className="max-w-4xl space-y-6">
+      <div className="relative rounded-2xl overflow-hidden border border-slate-200/80 shadow-md bg-slate-900 group">
+        <div className="relative aspect-[21/9] md:aspect-[3/1] overflow-hidden">
+          <img
+            src="/images/interview-coach.jpg"
+            alt="AI Interview Studio"
+            className="w-full h-full object-cover opacity-85 transition-transform duration-700 group-hover:scale-105"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-950/50 to-transparent flex items-center p-6">
+            <div className="max-w-md text-white">
+              <span className="inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold bg-brand-500/30 text-brand-300 border border-brand-400/30 mb-2">
+                Live AI Simulation Studio
+              </span>
+              <h2 className="text-xl md:text-2xl font-bold">AI Interview Coach</h2>
+              <p className="text-xs md:text-sm text-slate-300 mt-1">
+                Real-time voice practice, technical evaluation, and structured behavioral scoring.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div>
         <p className="text-sm font-semibold uppercase tracking-wide text-brand-600">Practice studio</p>
         <h1 className="mt-1 text-3xl font-bold text-slate-800">Placement & interview prep</h1>
@@ -59,7 +80,7 @@ export function InterviewList() {
               key={mode.value}
               aria-pressed={practice.practiceMode === mode.value}
               onClick={() => setPractice({ ...practice, practiceMode: mode.value })}
-              className={`${index === 0 ? "rounded-l-lg" : "rounded-r-lg border-l-0"} border px-4 py-2 text-sm font-semibold ${practice.practiceMode === mode.value ? "border-brand-600 bg-brand-600 text-white" : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"}`}
+              className={`${index === 0 ? "rounded-l-xl" : "rounded-r-xl border-l-0"} border px-4 py-2 text-sm font-semibold transition ${practice.practiceMode === mode.value ? "border-brand-600 bg-brand-600 text-white shadow-md shadow-brand-500/20" : "border-slate-200/80 dark:border-white/10 bg-white/80 dark:bg-slate-900/80 text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800"}`}
             >
               {mode.label}
             </button>
@@ -80,11 +101,11 @@ export function InterviewList() {
           <input className="input pl-9" placeholder="Filter your practice history" aria-label="Filter practice history" value={historySearch} onChange={(event) => setHistorySearch(event.target.value)} />
         </label>
         {visibleInterviews.map((iv) => (
-          <div key={iv._id} className="card flex items-center justify-between">
+          <div key={iv._id} className="card flex items-center justify-between hover:scale-[1.01] transition-transform">
             <div>
-              <p className="font-medium text-slate-800">{iv.company ? `${iv.company} · ` : ""}{iv.focusTopic || iv.targetRole} — {iv.practiceMode === "placement" ? "Placement prep" : "Mock interview"}</p>
-              <p className="mt-1 text-xs text-slate-400">Role: {iv.targetRole}</p>
-              <p className="text-xs text-slate-400">{iv.status === "completed" ? `Score: ${iv.finalScore}%` : "In progress"}</p>
+              <p className="font-bold text-slate-900 dark:text-white">{iv.company ? `${iv.company} · ` : ""}{iv.focusTopic || iv.targetRole} — {iv.practiceMode === "placement" ? "Placement prep" : "Mock interview"}</p>
+              <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Role: <span className="font-semibold text-slate-700 dark:text-slate-300">{iv.targetRole}</span></p>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{iv.status === "completed" ? <span className="text-emerald-600 dark:text-emerald-400 font-semibold">Score: {iv.finalScore}%</span> : <span className="text-amber-600 dark:text-amber-400 font-medium">In progress</span>}</p>
             </div>
             <Link to={`/interview-coach/${iv._id}${iv.status === "completed" ? "/report" : ""}`} className="btn-secondary">
               {iv.status === "completed" ? "View Report" : "Continue"}
@@ -214,6 +235,23 @@ export function InterviewSession() {
 
   return (
     <div className="max-w-2xl space-y-6">
+      <div className="relative rounded-2xl overflow-hidden border border-slate-800 bg-slate-950 shadow-xl group">
+        <div className="relative aspect-video w-full overflow-hidden">
+          <img
+            src="/images/interview-coach.jpg"
+            alt="AI Interview Coach Sarah J."
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+          />
+          <div className="absolute top-3 left-3 flex items-center gap-2 bg-slate-900/85 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10 text-xs font-medium text-white shadow">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span>AI Mock Interview Active</span>
+          </div>
+          <div className="absolute bottom-3 left-3 bg-slate-900/85 backdrop-blur-md px-3 py-1.5 rounded-lg border border-white/10 text-xs text-slate-200 shadow">
+            <span className="font-semibold text-emerald-400">Sarah J.</span> · AI Senior Interview Coach
+          </div>
+        </div>
+      </div>
+
       <h1 className="text-2xl font-bold text-slate-800">{interview.targetRole} Interview</h1>
       <div className="card">
         <span className="text-xs font-semibold text-brand-600 uppercase">{q.category}</span>

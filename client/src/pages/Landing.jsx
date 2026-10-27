@@ -15,6 +15,7 @@ const FEATURES = [
     id: 1,
     title: "AI-Powered Career Coaching",
     description: "Get personalized guidance from our advanced AI system that understands your unique career aspirations and helps you navigate the job market with confidence.",
+    image: "/images/career-coaching.jpg",
     imageBg: "from-blue-500/20 via-cyan-500/20 to-teal-500/20",
     accent: "from-blue-400 to-cyan-400",
     position: "left"
@@ -23,6 +24,7 @@ const FEATURES = [
     id: 2,
     title: "Professional Resume Optimization",
     description: "Transform your resume with AI-driven insights. Match your profile against job requirements and get actionable recommendations to increase your chances.",
+    image: "/images/resume-optimization.jpg",
     imageBg: "from-amber-500/20 via-yellow-500/20 to-orange-500/20",
     accent: "from-amber-300 to-yellow-300",
     position: "right"
@@ -31,9 +33,19 @@ const FEATURES = [
     id: 3,
     title: "Real-Time Skill Assessment",
     description: "Comprehensive evaluation of your technical and soft skills with detailed feedback and personalized development paths tailored to your career goals.",
+    image: "/images/skill-assessment.jpg",
     imageBg: "from-purple-500/20 via-pink-500/20 to-rose-500/20",
     accent: "from-purple-400 to-pink-400",
     position: "left"
+  },
+  {
+    id: 4,
+    title: "Deterministic Career Trajectory Simulation",
+    description: "Model what-if growth scenarios with pinpoint accuracy. Visualize role progression, salary growth curves, and skill milestone unlocks before taking your next step.",
+    image: "/images/career-simulation.jpg",
+    imageBg: "from-emerald-500/20 via-teal-500/20 to-cyan-500/20",
+    accent: "from-emerald-400 to-teal-400",
+    position: "right"
   },
 ];
 
@@ -141,26 +153,26 @@ const ImageShowcase = ({ feature, index }) => {
       <div className="grid md:grid-cols-2 gap-8 lg:gap-12 items-center py-12 md:py-20">
         {/* Content Side */}
         <div className={`space-y-6 ${isLeft ? "md:order-1" : "md:order-2"}`}>
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-gradient-to-r from-brand-50 to-teal-50 rounded-full border border-brand-100">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-gradient-to-r from-brand-50 to-teal-50 dark:from-brand-950/70 dark:to-teal-950/70 rounded-full border border-brand-200/60 dark:border-brand-800/60 shadow-sm">
             <span className="w-2 h-2 rounded-full bg-gradient-to-r from-brand-500 to-teal-500 animate-pulse"></span>
-            <span className="text-sm font-medium text-brand-700">Feature {index + 1}</span>
+            <span className="text-xs font-semibold tracking-wide uppercase text-brand-700 dark:text-brand-300">Feature {index + 1}</span>
           </div>
           
-          <h2 className="text-3xl md:text-4xl font-bold text-slate-900 leading-tight">
+          <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white leading-tight tracking-tight">
             {feature.title}
           </h2>
           
-          <p className="text-lg text-slate-600 leading-relaxed">
+          <p className="text-lg text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
             {feature.description}
           </p>
           
           <div className="space-y-3 pt-4">
             {["AI-Driven Insights", "Real-Time Updates", "Actionable Feedback"].map((benefit) => (
               <div key={benefit} className="flex items-center gap-3">
-                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-brand-500 to-teal-500 flex items-center justify-center flex-shrink-0">
-                  <Check size={16} className="text-white" />
+                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-brand-500 to-teal-500 flex items-center justify-center flex-shrink-0 shadow-sm">
+                  <Check size={14} className="text-white" />
                 </div>
-                <span className="text-slate-700 font-medium">{benefit}</span>
+                <span className="text-slate-700 dark:text-slate-200 font-medium">{benefit}</span>
               </div>
             ))}
           </div>
@@ -177,23 +189,21 @@ const ImageShowcase = ({ feature, index }) => {
             <div className={`absolute inset-0 bg-gradient-to-br ${feature.imageBg} rounded-2xl blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500`}></div>
             
             {/* Image container */}
-            <div className="relative bg-gradient-to-br from-slate-50 to-slate-100 rounded-2xl overflow-hidden border border-slate-200 shadow-xl group-hover:shadow-2xl transition-all duration-500 transform group-hover:scale-105">
-              {/* Placeholder with gradient accent */}
-              <div className="aspect-video relative overflow-hidden bg-slate-100">
-                <div className={`absolute inset-0 bg-gradient-to-br ${feature.accent} opacity-20`}></div>
+            <div className="relative bg-gradient-to-br from-slate-900 to-slate-950 rounded-2xl overflow-hidden border border-slate-200/80 shadow-xl group-hover:shadow-2xl transition-all duration-500 transform group-hover:scale-[1.02]">
+              <div className="aspect-video relative overflow-hidden bg-slate-950">
+                <img
+                  src={feature.image}
+                  alt={feature.title}
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  loading="lazy"
+                />
                 
-                {/* Animated elements inside placeholder */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-center">
-                    <div className={`w-24 h-24 mx-auto mb-4 bg-gradient-to-br ${feature.accent} rounded-full opacity-30 animate-pulse`}></div>
-                    <p className="text-slate-500 font-medium">Professional AI Collaboration</p>
-                    <p className="text-sm text-slate-400 mt-2">Image will showcase real career guidance in action</p>
-                  </div>
-                </div>
-                
+                {/* Subtle sheen and vignette overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent opacity-80 group-hover:opacity-40 transition-opacity duration-500 pointer-events-none"></div>
+
                 {/* Animated gradient overlay on hover */}
                 <div
-                  className="absolute inset-0 bg-gradient-to-br opacity-0 group-hover:opacity-30 transition-opacity duration-500"
+                  className="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-500 pointer-events-none"
                   style={{
                     background: `radial-gradient(circle at ${mousePosition.x * 100}% ${mousePosition.y * 100}%, currentColor, transparent)`,
                   }}
@@ -201,7 +211,7 @@ const ImageShowcase = ({ feature, index }) => {
               </div>
               
               {/* Bottom accent bar */}
-              <div className={`h-1 bg-gradient-to-r ${feature.accent}`}></div>
+              <div className={`h-1.5 bg-gradient-to-r ${feature.accent}`}></div>
             </div>
 
             {/* Corner accent elements */}
@@ -273,7 +283,7 @@ export default function Landing() {
               : "opacity-0 translate-y-10"
           }`}
         >
-          <h1 className="text-4xl md:text-6xl font-bold text-slate-900 leading-tight tracking-tight">
+          <h1 className="text-4xl md:text-6xl font-extrabold text-slate-900 dark:text-white leading-tight tracking-tight">
             Know Your Readiness. Find Your Fit.{" "}
             <span className="bg-gradient-to-r from-brand-600 via-brand-500 to-emerald-500 bg-clip-text text-transparent animate-gradient">
               Build Your Career.
@@ -290,7 +300,7 @@ export default function Landing() {
               : "opacity-0 translate-y-10"
           }`}
         >
-          <p className="mt-6 text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
+          <p className="mt-6 text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
             An AI-powered employability intelligence platform that evaluates your skills, matches you with jobs,
             identifies your gaps, simulates your career growth, and prepares you for interviews.
           </p>
@@ -302,7 +312,7 @@ export default function Landing() {
               type="button"
               aria-pressed={practiceMode === "placement"}
               onClick={() => setPracticeMode("placement")}
-              className={`rounded-l-lg border px-5 py-2.5 text-sm font-semibold ${practiceMode === "placement" ? "border-brand-600 bg-brand-600 text-white shadow-md" : "border-slate-200 bg-white/80 text-slate-600 hover:bg-white"}`}
+              className={`rounded-l-xl border px-5 py-2.5 text-sm font-semibold transition ${practiceMode === "placement" ? "border-brand-600 bg-brand-600 text-white shadow-md shadow-brand-500/20" : "border-slate-200 dark:border-white/10 bg-white/80 dark:bg-slate-900/80 text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800"}`}
             >
               Placement prep
             </button>
@@ -310,27 +320,27 @@ export default function Landing() {
               type="button"
               aria-pressed={practiceMode === "interview"}
               onClick={() => setPracticeMode("interview")}
-              className={`rounded-r-lg border-y border-r px-5 py-2.5 text-sm font-semibold ${practiceMode === "interview" ? "border-brand-600 bg-brand-600 text-white shadow-md" : "border-slate-200 bg-white/80 text-slate-600 hover:bg-white"}`}
+              className={`rounded-r-xl border-y border-r px-5 py-2.5 text-sm font-semibold transition ${practiceMode === "interview" ? "border-brand-600 bg-brand-600 text-white shadow-md shadow-brand-500/20" : "border-slate-200 dark:border-white/10 bg-white/80 dark:bg-slate-900/80 text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800"}`}
             >
               Mock interview
             </button>
           </div>
-          <form onSubmit={searchPractice} className="grid gap-3 rounded-2xl border border-white/80 bg-white/75 p-3 shadow-xl shadow-slate-900/10 backdrop-blur-xl sm:grid-cols-[minmax(0,1fr)_minmax(0,0.65fr)_auto]">
-            <label className="flex min-w-0 items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 focus-within:border-brand-400 focus-within:ring-2 focus-within:ring-brand-100">
+          <form onSubmit={searchPractice} className="grid gap-3 rounded-2xl border border-white/80 dark:border-white/10 bg-white/75 dark:bg-slate-900/75 p-3 shadow-xl shadow-slate-900/10 dark:shadow-black/40 backdrop-blur-2xl sm:grid-cols-[minmax(0,1fr)_minmax(0,0.65fr)_auto]">
+            <label className="flex min-w-0 items-center gap-3 rounded-xl border border-slate-200/80 dark:border-white/10 bg-white dark:bg-slate-950/60 px-4 focus-within:border-brand-400 focus-within:ring-2 focus-within:ring-brand-100 dark:focus-within:ring-brand-900">
               <Search size={20} className="shrink-0 text-slate-400" aria-hidden="true" />
               <input
                 aria-label="Topic or role"
-                className="min-w-0 flex-1 border-0 bg-transparent py-3 text-sm text-slate-800 outline-none placeholder:text-slate-400 focus:ring-0"
+                className="min-w-0 flex-1 border-0 bg-transparent py-3 text-sm text-slate-800 dark:text-slate-100 outline-none placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:ring-0"
                 placeholder="Search a topic or role..."
                 autoComplete="off"
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
               />
             </label>
-            <label className="flex min-w-0 items-center rounded-xl border border-slate-200 bg-white px-4 focus-within:border-brand-400 focus-within:ring-2 focus-within:ring-brand-100">
+            <label className="flex min-w-0 items-center rounded-xl border border-slate-200/80 dark:border-white/10 bg-white dark:bg-slate-950/60 px-4 focus-within:border-brand-400 focus-within:ring-2 focus-within:ring-brand-100 dark:focus-within:ring-brand-900">
               <input
                 aria-label="Company"
-                className="min-w-0 flex-1 border-0 bg-transparent py-3 text-sm text-slate-800 outline-none placeholder:text-slate-400 focus:ring-0"
+                className="min-w-0 flex-1 border-0 bg-transparent py-3 text-sm text-slate-800 dark:text-slate-100 outline-none placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:ring-0"
                 placeholder="Company (optional)"
                 autoComplete="organization"
                 value={company}
@@ -342,13 +352,13 @@ export default function Landing() {
             </button>
           </form>
           <div className="mt-5 flex flex-wrap items-center justify-center gap-2 text-sm">
-            <span className="mr-1 inline-flex items-center gap-1.5 font-medium text-slate-500"><TrendingUp size={16} /> Trending</span>
+            <span className="mr-1 inline-flex items-center gap-1.5 font-medium text-slate-500 dark:text-slate-400"><TrendingUp size={16} /> Trending</span>
             {["Logical reasoning", "TCS", "Python", "Wipro", "Data structures"].map((suggestion) => (
               <button
                 type="button"
                 key={suggestion}
                 onClick={() => /^(tcs|wipro)$/i.test(suggestion) ? setCompany(suggestion) : setQuery(suggestion)}
-                className="rounded-full border border-slate-200 bg-white/70 px-3.5 py-2 text-slate-600 transition hover:-translate-y-0.5 hover:border-brand-300 hover:bg-white hover:text-brand-700"
+                className="rounded-full border border-slate-200/80 dark:border-white/10 bg-white/70 dark:bg-slate-900/70 px-3.5 py-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 transition hover:-translate-y-0.5 hover:border-brand-300 hover:bg-white dark:hover:bg-slate-800 hover:text-brand-600 dark:hover:text-brand-300"
               >
                 {suggestion}
               </button>
@@ -384,10 +394,10 @@ export default function Landing() {
               : "opacity-0 translate-y-10"
           }`}
         >
-          <h2 className="text-center text-3xl md:text-4xl font-bold text-slate-900 mb-4">
+          <h2 className="text-center text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white mb-4 tracking-tight">
             Four AI-Powered Engines
           </h2>
-          <p className="text-center text-slate-600 max-w-2xl mx-auto mb-12">
+          <p className="text-center text-slate-600 dark:text-slate-300 max-w-2xl mx-auto mb-12">
             Comprehensive tools designed to accelerate your career journey
           </p>
         </div>
@@ -411,14 +421,14 @@ export default function Landing() {
                   transitionDelay: isInView ? `${index * 100}ms` : "0ms"
                 }}
               >
-                <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-brand-50 to-teal-50 text-brand-600 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform duration-300">
+                <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-brand-50 to-teal-50 dark:from-brand-950/70 dark:to-teal-950/70 text-brand-600 dark:text-brand-300 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform duration-300 shadow-sm">
                   <Icon size={22} />
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-semibold text-slate-900 group-hover:text-brand-600 transition-colors duration-300">
+                  <h3 className="font-semibold text-slate-900 dark:text-white group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors duration-300">
                     {title}
                   </h3>
-                  <p className="text-sm text-slate-600 mt-1 group-hover:text-slate-700 transition-colors duration-300">
+                  <p className="text-sm text-slate-600 dark:text-slate-300 mt-1 transition-colors duration-300">
                     {desc}
                   </p>
                 </div>
@@ -431,10 +441,10 @@ export default function Landing() {
       {/* Features Showcase Section with Images */}
       <section className="relative z-10 max-w-6xl mx-auto px-6 py-20 md:py-32">
         <div className="mb-16 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
+          <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white mb-4 tracking-tight">
             Experience the Power of AI-Driven Career Growth
           </h2>
-          <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+          <p className="text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
             See how our intelligent platform transforms your career journey with real-time insights and personalized guidance.
           </p>
         </div>
@@ -454,17 +464,17 @@ export default function Landing() {
           <div className="absolute inset-0 bg-gradient-to-r from-brand-500/20 via-teal-500/20 to-brand-500/20 rounded-3xl blur-2xl opacity-60 group-hover:opacity-100 transition-opacity duration-500"></div>
           
           {/* Content card */}
-          <div className="relative bg-gradient-to-br from-white/80 to-slate-50/80 backdrop-blur-sm rounded-3xl p-8 md:p-12 border border-white/20 shadow-xl">
+          <div className="relative bg-gradient-to-br from-white/80 to-slate-50/80 dark:from-slate-900/80 dark:to-slate-950/80 backdrop-blur-2xl rounded-3xl p-8 md:p-12 border border-white/60 dark:border-white/10 shadow-2xl">
             <div className="text-center">
-              <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
+              <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white mb-4 tracking-tight">
                 Ready to Transform Your Career?
               </h2>
-              <p className="text-lg text-slate-600 mb-8 max-w-2xl mx-auto">
+              <p className="text-lg text-slate-600 dark:text-slate-300 mb-8 max-w-2xl mx-auto">
                 Join thousands of professionals using CareerAI to accelerate their career growth and land their dream jobs.
               </p>
               <Link
                 to="/signup"
-                className="btn-primary inline-block text-base px-8 py-4 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
+                className="btn-primary inline-block text-base px-8 py-4 shadow-lg shadow-brand-500/25 hover:shadow-xl hover:scale-105 transition-all duration-300"
               >
                 Start Your Journey Today
               </Link>

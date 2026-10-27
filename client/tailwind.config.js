@@ -1,8 +1,12 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: "class",
   content: ["./index.html", "./src/**/*.{js,jsx}"],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['"Plus Jakarta Sans"', "Inter", "system-ui", "-apple-system", "sans-serif"],
+      },
       colors: {
         brand: {
           50: "#eef2ff",
@@ -15,6 +19,7 @@ export default {
           700: "#4338ca",
           800: "#3730a3",
           900: "#312e81",
+          950: "#1e1b4b",
         },
       },
     },
