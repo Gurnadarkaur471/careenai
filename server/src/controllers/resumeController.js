@@ -1,4 +1,5 @@
 const path = require("path");
+const fs = require("fs");
 const Resume = require("../models/Resume");
 const StudentProfile = require("../models/StudentProfile");
 const asyncHandler = require("../utils/asyncHandler");
@@ -12,11 +13,19 @@ const Progress = require("../models/Progress");
 const uploadResume = asyncHandler(async (req, res) => {
   if (!req.file) return fail(res, "No file uploaded. Attach a PDF or DOCX resume.", 400);
 
+  let extractedText = "";
+  try {
+    extractedText = await extractText(req.file.path);
+  } catch (err) {
+    console.warn("[resume] eager text extraction warning:", err.message);
+  }
+
   const resume = await Resume.create({
     studentId: req.user._id,
     fileName: req.file.originalname,
     filePath: req.file.path,
     fileType: path.extname(req.file.originalname).toLowerCase(),
+    extractedText,
   });
 
   return success(res, { resume }, 201);
@@ -27,7 +36,18 @@ const analyzeResume = asyncHandler(async (req, res) => {
   const resume = await Resume.findOne({ _id: resumeId, studentId: req.user._id });
   if (!resume) return fail(res, "Resume not found.", 404);
 
-  const text = await extractText(resume.filePath);
+  let text = resume.extractedText;
+  if (!text && resume.filePath && fs.existsSync(resume.filePath)) {
+    try {
+      text = await extractText(resume.filePath);
+    } catch (e) {
+      console.warn("[resume] file extract failed:", e.message);
+    }
+  }
+
+  if (!text) {
+    return fail(res, "Could not extract readable text from the resume. Please upload a clear PDF or DOCX file.", 400);
+  }
   const deterministicSkills = extractSkillsFromText(text);
   const { resumeScore, analysis, sections } = scoreResume({ text, skills: deterministicSkills });
 

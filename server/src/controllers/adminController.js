@@ -14,11 +14,11 @@ const getDashboard = asyncHandler(async (req, res) => {
   const totalStudents = await User.countDocuments({ role: "STUDENT" });
   const profiles = await StudentProfile.find();
 
-  const avg = (arr, key) => (arr.length ? Math.round(arr.reduce((s, p) => s + (p[key] || 0), 0) / arr.length) : 0);
+  const avg = (arr, key) => (arr.length ? Math.round(arr.reduce((s, p) => s + (p?.[key] || 0), 0) / arr.length) : 0);
   const avgEmployability = avg(profiles, "employabilityScore");
-  const avgTechnical = avg(profiles.map((p) => p.componentScores), "technical");
-  const avgCommunication = avg(profiles.map((p) => p.componentScores), "communication");
-  const avgInterview = avg(profiles.map((p) => p.componentScores), "interview");
+  const avgTechnical = avg(profiles.map((p) => p.componentScores || {}), "technical");
+  const avgCommunication = avg(profiles.map((p) => p.componentScores || {}), "communication");
+  const avgInterview = avg(profiles.map((p) => p.componentScores || {}), "interview");
 
   const readyForPlacement = profiles.filter((p) => p.employabilityScore >= 75).length;
   const needsImprovement = profiles.filter((p) => p.employabilityScore < 50).length;

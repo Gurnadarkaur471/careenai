@@ -1,0 +1,40 @@
+services:
+  # -------------------------------------------------------------
+  # OPTION 1: Unified Full-Stack Service (Single Free Service)
+  # Serves both Express API and React Frontend from the same URL
+  # -------------------------------------------------------------
+  - type: web
+    name: careerai-fullstack
+    runtime: node
+    plan: free
+    region: oregon
+    buildCommand: npm run render-build
+    startCommand: npm run render-start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: CLIENT_URL
+        value: "*"
+      - key: AI_API_KEY
+        sync: false
+      - key: AI_API_URL
+        value: https://api.groq.com/openai/v1
+      - key: AI_MODEL
+        value: qwen/qwen3.8-27b
+      - key: AI_FALLBACK_MODEL
+        value: openai/gpt-oss-120b
+      - key: ADMIN_NAME
+        value: Placement Admin
+      - key: ADMIN_EMAIL
+        value: admin@careerai.local
+      - key: ADMIN_PASSWORD
+        value: ChangeMe123!

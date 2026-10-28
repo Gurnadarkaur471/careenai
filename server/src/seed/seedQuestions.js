@@ -179,6 +179,7 @@ if (require.main === module) {
 module.exports = {
   seedDatabase,
   seedDefaultAssessments,
+  seedJobs,
   ensureQuestionSet,
   APTITUDE_QUESTIONS,
   TECHNICAL_QUESTIONS,

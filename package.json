@@ -1,0 +1,31 @@
+{
+  "name": "careerai",
+  "version": "1.0.0",
+  "description": "CareerAI - AI-Powered Employability Intelligence Platform",
+  "private": true,
+  "main": "server/src/server.js",
+  "scripts": {
+    "install:all": "npm --prefix server install && npm --prefix client install",
+    "build": "npm --prefix client install && npm --prefix client run build",
+    "build:client": "npm --prefix client run build",
+    "start": "node server/src/server.js",
+    "start:server": "npm --prefix server start",
+    "dev:server": "npm --prefix server run dev",
+    "dev:client": "npm --prefix client run dev",
+    "seed:admin": "npm --prefix server run seed:admin",
+    "seed:questions": "npm --prefix server run seed:questions",
+    "render-build": "npm --prefix server install && npm --prefix client install && npm --prefix client run build && npm --prefix server run seed:admin && npm --prefix server run seed:questions",
+    "render-start": "node server/src/server.js"
+  },
+  "keywords": [
+    "careerai",
+    "react",
+    "express",
+    "mongodb",
+    "vite",
+    "ats",
+    "resume-analysis"
+  ],
+  "author": "CareerAI Team",
+  "license": "ISC"
+}

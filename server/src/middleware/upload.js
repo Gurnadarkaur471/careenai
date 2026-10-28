@@ -2,11 +2,25 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 
-const uploadDir = path.join(__dirname, "..", "..", "uploads");
-if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
+const isServerless = Boolean(process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME || process.env.RENDER_DISK === "false");
+const defaultUploadDir = isServerless ? "/tmp/uploads" : path.join(__dirname, "..", "..", "uploads");
+const uploadDir = process.env.UPLOAD_DIR || defaultUploadDir;
+
+try {
+  if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
+} catch (e) {
+  console.warn("[upload] could not create primary upload dir, falling back to /tmp:", e.message);
+}
 
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, uploadDir),
+  destination: (req, file, cb) => {
+    try {
+      if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
+      cb(null, uploadDir);
+    } catch {
+      cb(null, "/tmp");
+    }
+  },
   filename: (req, file, cb) => {
     const unique = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
     cb(null, `${unique}${path.extname(file.originalname)}`);
