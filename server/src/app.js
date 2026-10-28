@@ -87,15 +87,29 @@ app.use("/api/reports", reportRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/notifications", notificationRoutes);
 
-// Static frontend serving if client is built alongside server
-const clientDistPath = path.resolve(__dirname, "../../client/dist");
-if (fs.existsSync(clientDistPath)) {
+// Static frontend serving across multiple possible deployment directory layouts
+const possibleDistPaths = [
+  path.resolve(__dirname, "../../client/dist"),
+  path.resolve(__dirname, "../public"),
+  path.resolve(__dirname, "../dist"),
+  path.resolve(process.cwd(), "client/dist"),
+  path.resolve(process.cwd(), "public"),
+  path.resolve(process.cwd(), "dist"),
+];
+
+const clientDistPath = possibleDistPaths.find(
+  (p) => fs.existsSync(p) && fs.existsSync(path.join(p, "index.html"))
+);
+
+if (clientDistPath) {
+  console.log(`[server] Serving static frontend from: ${clientDistPath}`);
   app.use(express.static(clientDistPath));
   app.get("*", (req, res, next) => {
     if (req.path.startsWith("/api")) return next();
     res.sendFile(path.join(clientDistPath, "index.html"));
   });
 } else {
+  console.warn("[server] No built static frontend found. Serving API only.");
   app.get("/", (req, res) => {
     res.json({
       success: true,
