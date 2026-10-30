@@ -17,6 +17,7 @@ const getDashboard = asyncHandler(async (req, res) => {
   const avg = (arr, key) => (arr.length ? Math.round(arr.reduce((s, p) => s + (p?.[key] || 0), 0) / arr.length) : 0);
   const avgEmployability = avg(profiles, "employabilityScore");
   const avgTechnical = avg(profiles.map((p) => p.componentScores || {}), "technical");
+  const avgResume = avg(profiles.map((p) => p.componentScores || {}), "resume");
   const avgCommunication = avg(profiles.map((p) => p.componentScores || {}), "communication");
   const avgInterview = avg(profiles.map((p) => p.componentScores || {}), "interview");
 
@@ -40,6 +41,7 @@ const getDashboard = asyncHandler(async (req, res) => {
     totalStudents,
     avgEmployability,
     avgTechnical,
+    avgResume,
     avgCommunication,
     avgInterview,
     readyForPlacement,
@@ -52,22 +54,29 @@ const getDashboard = asyncHandler(async (req, res) => {
 const listStudents = asyncHandler(async (req, res) => {
   const { branch, semester, minScore, search } = req.query;
   const userFilter = { role: "STUDENT" };
-  if (search) userFilter.$or = [{ name: new RegExp(search, "i") }, { email: new RegExp(search, "i") }];
+  if (typeof search === "string" && search.trim()) {
+    const escapedSearch = search.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    userFilter.$or = [{ name: new RegExp(escapedSearch, "i") }, { email: new RegExp(escapedSearch, "i") }];
+  }
 
   const users = await User.find(userFilter).select("name email college course branch semester createdAt");
   const userIds = users.map((u) => u._id);
 
   const profileFilter = { userId: { $in: userIds } };
-  if (branch) profileFilter.branch = branch;
-  if (semester) profileFilter.semester = semester;
-  if (minScore) profileFilter.employabilityScore = { $gte: Number(minScore) };
-
   const profiles = await StudentProfile.find(profileFilter);
   const profileMap = new Map(profiles.map((p) => [String(p.userId), p]));
 
   const students = users
-    .filter((u) => profileMap.has(String(u._id)))
-    .map((u) => ({ user: u, profile: profileMap.get(String(u._id)) }));
+    .map((user) => {
+      const profile = profileMap.get(String(user._id)) || null;
+      return { user, profile };
+    })
+    .filter(({ user, profile }) => {
+      if (branch && (profile?.branch || user.branch) !== branch) return false;
+      if (semester && (profile?.semester || user.semester) !== semester) return false;
+      if (minScore && (profile?.employabilityScore ?? 0) < Number(minScore)) return false;
+      return true;
+    });
 
   return success(res, { students });
 });

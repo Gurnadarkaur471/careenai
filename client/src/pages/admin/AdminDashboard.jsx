@@ -1,21 +1,37 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import StatCard from "../../components/StatCard.jsx";
 import { Users, TrendingUp, AlertTriangle, CheckCircle2, BarChart3 } from "lucide-react";
 import api from "../../services/api";
+import Students from "./Students.jsx";
 
 export default function AdminDashboard() {
   const [data, setData] = useState(null);
+  const [error, setError] = useState("");
 
-  useEffect(() => {
-    api.get("/admin/dashboard").then((res) => setData(res.data.data));
+  const loadDashboard = useCallback(() => {
+    setError("");
+    api.get("/admin/dashboard")
+      .then((res) => setData(res.data.data))
+      .catch((err) => setError(err.response?.data?.message || "Unable to load dashboard data."));
   }, []);
+
+  useEffect(() => { loadDashboard(); }, [loadDashboard]);
 
   if (!data) {
     return (
       <div className="card text-center py-12 text-slate-500 dark:text-slate-400">
-        <div className="inline-block h-6 w-6 animate-spin rounded-full border-2 border-brand-500 border-r-transparent mr-2 align-middle" />
-        Loading dashboard…
+        {error ? (
+          <div role="alert" className="space-y-3">
+            <p className="text-rose-600 dark:text-rose-400">{error}</p>
+            <button className="btn-secondary" onClick={loadDashboard}>Retry</button>
+          </div>
+        ) : (
+          <>
+            <div className="inline-block h-6 w-6 animate-spin rounded-full border-2 border-brand-500 border-r-transparent mr-2 align-middle" />
+            Loading dashboard…
+          </>
+        )}
       </div>
     );
   }
@@ -100,6 +116,8 @@ export default function AdminDashboard() {
         <StatCard label="Avg Resume" value={`${data.avgResume}%`} color="amber" />
         <StatCard label="Avg Interview" value={`${data.avgInterview}%`} color="purple" />
       </div>
+
+      <Students />
     </div>
   );
 }

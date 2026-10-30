@@ -34,11 +34,11 @@ export default function Login() {
         <div className="relative hidden md:block bg-slate-950">
           <img
             src="/images/career-coaching.jpg"
-            alt="CareerAI Platform"
+            alt="PrepWise Platform"
             className="w-full h-full object-cover opacity-85"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-slate-950/40 to-transparent flex flex-col justify-end p-8 text-white">
-            <span className="text-xs font-semibold text-brand-400 uppercase tracking-wider mb-1">CareerAI Intelligence</span>
+            <span className="text-xs font-semibold text-brand-400 uppercase tracking-wider mb-1">PrepWise Intelligence</span>
             <h2 className="text-2xl font-bold">Your Career Journey, Supercharged by AI.</h2>
             <p className="text-xs text-slate-300 mt-2">
               Continuous mock interviews, ATS resume diagnostics, and deterministic career simulation.
@@ -55,8 +55,19 @@ export default function Login() {
             <span>Back to Home</span>
           </Link>
 
+          <div className="flex items-center gap-2 mb-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white dark:bg-slate-900 shadow-sm ring-1 ring-slate-900/10 dark:ring-white/10 p-0.5">
+              <img src="/images/prepwise-icon.png" alt="PrepWise" className="h-full w-full object-contain dark:hidden" />
+              <img src="/images/prepwise-icon-dark.png" alt="PrepWise" className="h-full w-full object-contain hidden dark:block" />
+            </div>
+            <span className="text-lg font-black tracking-tight">
+              <span className="text-slate-900 dark:text-white">Prep</span>
+              <span className="bg-gradient-to-r from-brand-600 to-indigo-600 dark:from-brand-400 dark:to-indigo-400 bg-clip-text text-transparent">Wise</span>
+            </span>
+          </div>
+
           <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Welcome Back 👋</h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Sign in to your CareerAI employability workspace.</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Sign in to your PrepWise employability workspace.</p>
           <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-4">
             <div>
               <label className="label">Email</label>

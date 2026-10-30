@@ -96,7 +96,7 @@ export default function ResumeAnalyzer() {
             </label>
 
             <div className="mt-5 flex items-center justify-between">
-              <span className="text-xs text-slate-500 dark:text-slate-400">Powered by CareerAI ATS Diagnostics</span>
+              <span className="text-xs text-slate-500 dark:text-slate-400">Powered by PrepWise ATS Diagnostics</span>
               <button className="btn-primary" onClick={handleUploadAndAnalyze} disabled={uploading || analyzing}>
                 {uploading ? "Uploading…" : analyzing ? "Analyzing…" : "Analyze with AI"}
               </button>

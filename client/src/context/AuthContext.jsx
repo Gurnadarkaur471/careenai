@@ -6,7 +6,7 @@ const AuthContext = createContext(null);
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
     try {
-      const stored = localStorage.getItem("careerai_user");
+      const stored = localStorage.getItem("prepwise_user") || localStorage.getItem("careerai_user");
       return stored ? JSON.parse(stored) : null;
     } catch {
       return null;
@@ -15,7 +15,7 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem("careerai_token");
+    const token = localStorage.getItem("prepwise_token") || localStorage.getItem("careerai_token");
     if (!token) {
       setLoading(false);
       return;
@@ -24,9 +24,11 @@ export function AuthProvider({ children }) {
       .get("/auth/me")
       .then((res) => {
         setUser(res.data.data.user);
-        localStorage.setItem("careerai_user", JSON.stringify(res.data.data.user));
+        localStorage.setItem("prepwise_user", JSON.stringify(res.data.data.user));
       })
       .catch(() => {
+        localStorage.removeItem("prepwise_token");
+        localStorage.removeItem("prepwise_user");
         localStorage.removeItem("careerai_token");
         localStorage.removeItem("careerai_user");
         setUser(null);
@@ -37,8 +39,8 @@ export function AuthProvider({ children }) {
   const login = async (email, password) => {
     const res = await api.post("/auth/login", { email, password });
     const { token, user } = res.data.data;
-    localStorage.setItem("careerai_token", token);
-    localStorage.setItem("careerai_user", JSON.stringify(user));
+    localStorage.setItem("prepwise_token", token);
+    localStorage.setItem("prepwise_user", JSON.stringify(user));
     setUser(user);
     return user;
   };
@@ -46,13 +48,15 @@ export function AuthProvider({ children }) {
   const signup = async (payload) => {
     const res = await api.post("/auth/signup", payload);
     const { token, user } = res.data.data;
-    localStorage.setItem("careerai_token", token);
-    localStorage.setItem("careerai_user", JSON.stringify(user));
+    localStorage.setItem("prepwise_token", token);
+    localStorage.setItem("prepwise_user", JSON.stringify(user));
     setUser(user);
     return user;
   };
 
   const logout = () => {
+    localStorage.removeItem("prepwise_token");
+    localStorage.removeItem("prepwise_user");
     localStorage.removeItem("careerai_token");
     localStorage.removeItem("careerai_user");
     setUser(null);

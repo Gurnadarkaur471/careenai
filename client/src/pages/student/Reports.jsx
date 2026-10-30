@@ -36,7 +36,7 @@ export default function Reports() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `careerai-report-${id}.json`;
+    a.download = `prepwise-report-${id}.json`;
     a.click();
     URL.revokeObjectURL(url);
   };

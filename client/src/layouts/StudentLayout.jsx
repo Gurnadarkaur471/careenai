@@ -1,5 +1,5 @@
 import React from "react";
-import { NavLink, Outlet } from "react-router-dom";
+import { Link, NavLink, Outlet } from "react-router-dom";
 import {
   LayoutDashboard, FileText, ClipboardList, Briefcase, Target,
   Sparkles, Map, Mic, TrendingUp, FileBarChart, Settings, LogOut,
@@ -29,14 +29,16 @@ export default function StudentLayout() {
     <div className="page-shell flex min-h-screen text-slate-800 dark:text-slate-100 transition-colors duration-300">
       <aside className="glass-panel sticky top-0 flex h-screen w-72 shrink-0 flex-col border-r border-white/60 dark:border-white/10 bg-white/40 dark:bg-slate-950/60 backdrop-blur-2xl">
         <div className="border-b border-white/60 dark:border-white/10 px-6 py-5">
-          <div className="flex items-center gap-2.5">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-brand-600 to-teal-400 text-xs font-bold text-white shadow-md shadow-brand-500/25">
-              CA
+          <Link to="/dashboard" className="flex items-center gap-2.5 group">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white dark:bg-slate-900 shadow-md shadow-brand-500/10 ring-1 ring-slate-900/10 dark:ring-white/10 p-1 group-hover:scale-105 transition-transform duration-200">
+              <img src="/images/prepwise-icon.png" alt="PrepWise" className="h-full w-full object-contain dark:hidden" />
+              <img src="/images/prepwise-icon-dark.png" alt="PrepWise" className="h-full w-full object-contain hidden dark:block" />
+            </div>
+            <span className="text-xl font-black tracking-tight">
+              <span className="text-slate-900 dark:text-white">Prep</span>
+              <span className="bg-gradient-to-r from-brand-600 to-indigo-600 dark:from-brand-400 dark:to-indigo-400 bg-clip-text text-transparent">Wise</span>
             </span>
-            <span className="text-xl font-extrabold tracking-tight bg-gradient-to-r from-brand-600 to-teal-500 bg-clip-text text-transparent">
-              CareerAI
-            </span>
-          </div>
+          </Link>
           <p className="mt-1 text-xs text-slate-500 dark:text-slate-400 font-medium">Student workspace</p>
         </div>
 

@@ -283,6 +283,13 @@ export default function Landing() {
               : "opacity-0 translate-y-10"
           }`}
         >
+          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-white/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-white/10 shadow-sm backdrop-blur-md mb-6 hover:border-brand-500/40 transition-all duration-300">
+            <img src="/images/prepwise-icon.png" alt="PrepWise" className="h-5 w-5 object-contain dark:hidden" />
+            <img src="/images/prepwise-icon-dark.png" alt="PrepWise" className="h-5 w-5 object-contain hidden dark:block" />
+            <span className="text-xs font-semibold tracking-wide uppercase text-slate-700 dark:text-slate-300">
+              Prep<span className="text-brand-600 dark:text-brand-400">Wise</span> <span className="text-slate-400 dark:text-slate-500">•</span> AI-Powered Placement Readiness
+            </span>
+          </div>
           <h1 className="text-4xl md:text-6xl font-extrabold text-slate-900 dark:text-white leading-tight tracking-tight">
             Know Your Readiness. Find Your Fit.{" "}
             <span className="bg-gradient-to-r from-brand-600 via-brand-500 to-emerald-500 bg-clip-text text-transparent animate-gradient">
@@ -466,11 +473,23 @@ export default function Landing() {
           {/* Content card */}
           <div className="relative bg-gradient-to-br from-white/80 to-slate-50/80 dark:from-slate-900/80 dark:to-slate-950/80 backdrop-blur-2xl rounded-3xl p-8 md:p-12 border border-white/60 dark:border-white/10 shadow-2xl">
             <div className="text-center">
+              <div className="mx-auto mb-6 flex justify-center">
+                <img
+                  src="/images/prepwise-logo.png"
+                  alt="PrepWise - Placement Readiness Platform"
+                  className="h-24 w-auto object-contain dark:hidden drop-shadow-sm"
+                />
+                <img
+                  src="/images/prepwise-logo-dark.png"
+                  alt="PrepWise - Placement Readiness Platform"
+                  className="h-24 w-auto object-contain hidden dark:block drop-shadow-sm"
+                />
+              </div>
               <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white mb-4 tracking-tight">
                 Ready to Transform Your Career?
               </h2>
               <p className="text-lg text-slate-600 dark:text-slate-300 mb-8 max-w-2xl mx-auto">
-                Join thousands of professionals using CareerAI to accelerate their career growth and land their dream jobs.
+                Join thousands of professionals using PrepWise to accelerate their career growth and land their dream jobs.
               </p>
               <Link
                 to="/signup"

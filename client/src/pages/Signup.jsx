@@ -17,7 +17,7 @@ export default function Signup() {
     setLoading(true);
     try {
       await signup(data);
-      push("Account created! Welcome to CareerAI.");
+      push("Account created! Welcome to PrepWise.");
       if (location.state?.practice) navigate("/interview-coach", { state: { practice: location.state.practice } });
       else navigate("/dashboard");
     } catch (err) {
@@ -54,8 +54,19 @@ export default function Signup() {
             <span>Back to Home</span>
           </Link>
 
+          <div className="flex items-center gap-2 mb-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white dark:bg-slate-900 shadow-sm ring-1 ring-slate-900/10 dark:ring-white/10 p-0.5">
+              <img src="/images/prepwise-icon.png" alt="PrepWise" className="h-full w-full object-contain dark:hidden" />
+              <img src="/images/prepwise-icon-dark.png" alt="PrepWise" className="h-full w-full object-contain hidden dark:block" />
+            </div>
+            <span className="text-lg font-black tracking-tight">
+              <span className="text-slate-900 dark:text-white">Prep</span>
+              <span className="bg-gradient-to-r from-brand-600 to-indigo-600 dark:from-brand-400 dark:to-indigo-400 bg-clip-text text-transparent">Wise</span>
+            </span>
+          </div>
+
           <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Create Your Account</h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Join CareerAI and unlock your full career potential.</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Join PrepWise and unlock your full career potential.</p>
           <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-4">
             <div>
               <label className="label">Full Name</label>

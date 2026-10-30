@@ -50,7 +50,7 @@ export default function Settings() {
         </div>
         <h1 className="mt-1 text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">Notification Settings</h1>
         <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
-          Control which email notifications CareerAI sends to your inbox.
+          Control which email notifications PrepWise sends to your inbox.
         </p>
       </div>
 

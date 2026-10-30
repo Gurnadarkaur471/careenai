@@ -1,14 +1,29 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import api from "../../services/api";
-import { Search, Users2, TrendingUp } from "lucide-react";
+import { Search, Users2 } from "lucide-react";
 
 export default function Students() {
   const [students, setStudents] = useState([]);
   const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  const load = () => api.get("/admin/students", { params: { search } }).then((res) => setStudents(res.data.data.students || []));
+  const fetchStudents = useCallback(async (query) => {
+    setLoading(true);
+    setError("");
+    try {
+      const res = await api.get("/admin/students", { params: { search: query } });
+      setStudents(res.data.data.students || []);
+    } catch (err) {
+      setError(err.response?.data?.message || "Unable to load students. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { fetchStudents(""); }, [fetchStudents]);
+
+  const load = () => fetchStudents(search);
 
   const getScoreStyle = (score) => {
     if (score >= 75) return "bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/50";
@@ -41,6 +56,13 @@ export default function Students() {
         </div>
       </div>
 
+      {error && (
+        <div role="alert" className="card flex items-center justify-between gap-4 border border-rose-200 text-rose-700 dark:border-rose-900/60 dark:text-rose-300">
+          <p>{error}</p>
+          <button className="btn-secondary shrink-0" onClick={load}>Retry</button>
+        </div>
+      )}
+
       <div className="card overflow-x-auto border border-white/60 dark:border-white/10 bg-white/70 dark:bg-slate-900/60 backdrop-blur-2xl p-0">
         <table className="w-full text-sm">
           <thead>
@@ -63,19 +85,26 @@ export default function Students() {
                   </div>
                 </td>
                 <td className="py-3.5 px-5 text-slate-600 dark:text-slate-300">{user.email}</td>
-                <td className="py-3.5 px-5 text-slate-600 dark:text-slate-300">{user.branch || <span className="text-slate-400">—</span>}</td>
+                <td className="py-3.5 px-5 text-slate-600 dark:text-slate-300">{profile?.branch || user.branch || <span className="text-slate-400">—</span>}</td>
                 <td className="py-3.5 px-5">
-                  <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${getScoreStyle(profile.employabilityScore)}`}>
-                    {profile.employabilityScore}%
-                  </span>
+                  {profile?.employabilityScore != null ? (
+                    <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${getScoreStyle(profile.employabilityScore)}`}>
+                      {profile.employabilityScore}%
+                    </span>
+                  ) : <span className="text-slate-400">Not calculated</span>}
                 </td>
               </tr>
             ))}
-            {students.length === 0 && (
+            {loading && (
+              <tr><td colSpan={4} className="py-12 text-center text-slate-500 dark:text-slate-400">Loading students…</td></tr>
+            )}
+            {!loading && !error && students.length === 0 && (
               <tr>
                 <td colSpan={4} className="py-12 text-center">
                   <Users2 size={28} className="mx-auto text-slate-400 mb-2" />
-                  <p className="text-slate-500 dark:text-slate-400 font-medium">No students found.</p>
+                  <p className="text-slate-500 dark:text-slate-400 font-medium">
+                    {search ? "No students match your search." : "No student accounts found."}
+                  </p>
                 </td>
               </tr>
             )}
